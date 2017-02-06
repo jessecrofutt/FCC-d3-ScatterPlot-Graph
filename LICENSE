@@ -1,3 +1,7 @@
+Webpack configuration is based on this project:
+
+https://github.com/DinoJay/d3-babel-webpack
+
 The MIT License (MIT)
 
 Copyright (c) 2015 Ali Al Dallal
