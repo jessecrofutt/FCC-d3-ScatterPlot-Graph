@@ -1,0 +1,45 @@
+#svg {
+  background-color: rgba(200, 200, 200, 0.9);
+  padding: 1em;
+  width: 600px;
+  border: solid 1px black;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  border-radius: 3px; }
+
+body {
+  background-color: rgba(20, 20, 20, 0.98);
+  color: white;
+  display: flex;
+  justify-content: center;
+  width: 100%; }
+
+.bar {
+  fill: #29000b; }
+
+.barSelected {
+  fill: #C90039; }
+  .barSelected .bar:hover {
+    fill: #a50001; }
+  .barSelected .axis {
+    font: 10px sans-serif; }
+  .barSelected .axis path,
+  .barSelected .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges; }
+
+.tooltip {
+  padding: 1em;
+  color: #C90039;
+  background-color: rgba(20, 20, 20, 0.98);
+  border: solid 1px #29000b;
+  width: 6em;
+  height: 2em;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  border-radius: 3px; }
+
+/*# sourceMappingURL=style.css.map */

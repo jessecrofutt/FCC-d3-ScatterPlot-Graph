@@ -1,0 +1,50 @@
+
+
+=border-radius($radius)
+  -webkit-border-radius: $radius
+  -moz-border-radius: $radius
+  -ms-border-radius: $radius
+  border-radius: $radius
+
+$barColor: #29000b
+$barSelected: #C90039
+$charcoal: rgba(20,20,20,0.98)
+#svg
+  background-color: rgba(200,200,200,0.9)
+  padding: 1em
+  width: 600px
+  border: solid 1px black
+  +border-radius(3px)
+
+body
+  background-color: $charcoal
+  color: white
+  display: flex
+  justify-content: center
+  width: 100%
+.bar
+  fill: $barColor
+
+.barSelected
+  fill: $barSelected
+
+  .bar:hover
+    fill: #a50001
+
+  .axis 
+    font: 10px sans-serif
+
+  .axis path,
+  .axis line 
+    fill: none
+    stroke: #000
+    shape-rendering: crispEdges
+
+.tooltip
+  padding: 1em
+  color: $barSelected
+  background-color: $charcoal
+  border: solid 1px $barColor
+  width: 6em
+  height: 2em
+  +border-radius(3px)
