@@ -1,20 +1,17 @@
 Project
 
 ### To run
+Create a webpack build with this command:
 
-You can simply run webpack build using this command:
-
-```
 > $ npm run build
-```
 
-If you want to run with webpack-dev-server simply run this command:
 
-```
+To run the webpack-dev-server enter this command:
+
 > $ npm run start
-```
+
+
+
 Page is served at:
-```
 http://localhost:8888
 
-```

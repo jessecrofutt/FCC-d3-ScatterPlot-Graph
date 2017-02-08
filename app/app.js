@@ -1,10 +1,8 @@
-    //import * as d3 from 'd3';
 var d3 = require('d3');
 import _ from 'lodash';
 import './style/style.sass';
 
-let years = [];
-let url = 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json';
+let url = 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json';
 let tooltip = d3.select("body")
     .append("div")
     .attr("class" , "tooltip")
@@ -12,165 +10,178 @@ let tooltip = d3.select("body")
     .style("z-index", "10")
     .style("visibility", "hidden")
     .text("no data");
+
     // load the data
+let Doped = "blue";
 
 d3.json(url, (jsonData) => {
 
-  let data = jsonData.data;
+    let data = jsonData;
 
-      //loop to extract data year and month from fields
-  for (let i = 0; i < data.length; i++) {
+        //loop to extract data year and month from fields
+    for (let i = 0; i < data.length; i++) {
+      let minutesSeconds = '';
+      minutesSeconds = data[i].Time;
 
-    data[i].push(i);
-    let yearRx = /\d+/;
-    let monthRx = /\d{4}-(\d{2})-\d{2}/;
+      let a = minutesSeconds.split(':'); // split it at the colons
+      let seconds = (+a[0]) * 60 + (+a[1]);
 
-        //data[i][3] is the year
-    data[i].push(data[i][0].match(yearRx));
-    years.push(data[i][0].match(yearRx));
-
-        //data[i][4] is the month.
-    let month = data[i][0].match(monthRx, '$2');
-    let alphaMonth = "";
-
-    switch(month[1]) {
-      case "01":
-          alphaMonth = "Jan";
-          break;
-      case "04":
-          alphaMonth = "Apr";
-          break;
-      case "07":
-          alphaMonth = "Jul";
-          break;
-      case "10":
-          alphaMonth = "Sep";
-          break;
-
+      if (data[i].Doping !== "") {
+          data[i].Doped = "doped";
+      } else {
+          data[i].Doped = "clean";
+          data[i].Doping = "No Doping Allegations";
+      }
+      data[i].Seconds = seconds;
     }
-    data[i].push(alphaMonth);
-  }
-
-  console.log("data[0] " + data[0][0]);
-  console.log("data[1] " + data[0][1]);
-  console.log("data[2] " + data[0][2]);
-  console.log("data[3] " + data[0][3]);
-  console.log("data[4] " + data[0][4]);
 
       // set the dimensions of the canvas
-  var margin = {top: 70, right: 20, bottom: 70, left: 40},
+    let margin = {top: 70, right: 70, bottom: 70, left: 40},
       width = 600 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
 
       // set the ranges
-      //range ([start, ]stop[, step]) looks like ([start,stop], step) maybe
-  var x = d3.scaleLinear().range([0, width]);
-  var y = d3.scaleLinear().range([height, 0]);
+    let x = d3.scaleLinear().range([0, width]);
+    let y = d3.scaleLinear().range([height, 0]);
+
+
+    let timeFormatter = function(timeInSeconds) {
+        let minutes = Math.floor(timeInSeconds/60)
+        let seconds = timeInSeconds % 60;
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+        return minutes + ":" + seconds;
+    };
 
       //d3.axis* Displays automatic reference lines for scales.
       // define the x axis
-  var xAxis = d3.axisBottom()
-      .scale(x)
-          //d3.format("d") removes the comma from the year
-      .tickFormat(d3.format("d"))
-      .tickSize(8)
-      .ticks(25);
+    let xAxis = d3.axisBottom()
+        .scale(x)
 
-    // define the y axis
-  var yAxis = d3.axisLeft()
-      .scale(y);
+        .tickFormat(timeFormatter)
+        .tickSize(8)
 
-    // add the SVG element
-  var svg = d3.select("body").append("svg")
-      .attr("id", "svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+        // define the y axis
+    let yAxis = d3.axisLeft()
+        .scale(y);
 
-          //.append("g") appends a 'g' element to the SVG. g element is used to group SVG shapes together, so no it's not d3 specific.
+        // add the SVG element
+    let svg = d3.select("body").append("svg")
+
+        .attr("id", "svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        //.append("g") appends a 'g' element to the SVG. g element is used to group SVG shapes together, so no it's not d3 specific.
       .append("g")
-      .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  // scale the range of the data
-    //x.domain([d3.min(data, function(d) { return d[3]; }), d3.max(data, function(d) { return d[3]; })]);
-    //d3.extent(years) returns an array containing the beginning and end of a specified array
-  x.domain(d3.extent(years));
-    //An optional accessor function may be specified, which is equivalent to calling array.map(accessor) before computing the maximum value.
-  y.domain([0, d3.max(data, function(d) { return d[1]; })]);
+        // scale the range of the data
+    let minSeconds = data[0].Seconds;
+    let maxSeconds = data[data.length-1].Seconds;
+    let difSeconds = maxSeconds - minSeconds;
+    x.domain([difSeconds, 0]);
+
+        //An optional accessor function may be specified, which is equivalent to calling array.map(accessor) before computing the maximum value.
+    y.domain([d3.max(data, function(d) { return d.Place + 1; }), 1]);
+
       //title
-  svg.append("text")
-      .attr("x", (width / 2))
-      .attr("y", 0 - (margin.top/2))
-      .attr("text-anchor", "middle")
-      .style("font-size", "20px")
-      .style("text-decoration", "none")
-      .text("US Gross Domestic Product 1947-2015");
-  svg.append("text")
-      .attr("x", (width / 2))
-      .attr("y", 0 - (margin.top/4))
-      .attr("text-anchor", "middle")
-      .style("font-size", "16px")
-      .style("text-decoration", "none")
-      .text("In Billions USD");
+    svg.append("text")
+        .attr("x", (width / 2))
+        .attr("y", 0 - (margin.top/1.5))
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+        .style("text-decoration", "none")
+        .text("Doping in Professional Bicycle Racing");
+    svg.append("text")
+        .attr("x", (width / 2))
+        .attr("y", 0 - (margin.top/3))
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("text-decoration", "none")
+        .html("35 fastest times ascending <a href='https://en.wikipedia.org/wiki/Alpe_dHuez'>Alpe d'Huez</a>");
+    svg.append("text")
+        .attr("x", (width / 2))
+        .attr("y", 0 - (margin.top/9))
+        .attr("text-anchor", "middle")
+        .style("font-size", "14px")
+        .style("text-decoration", "none")
+        .text("Distance normalized to 13.8 km");
+
+        //Left Side Credits
+    svg.append("text")
+        .attr("x", -120)
+        .attr("y", -30)
+        .attr("text-anchor", "end")
+        .attr("transform", "rotate(-90)")
+        .style("font-size", "14px")
+        .style("text-decoration", "none")
+        .html("Ranking");
+
+        //Bottom of the page credits
+    svg.append("text")
+        .attr("x", (width / 2))
+        .attr("y", height + 40)
+        .attr("text-anchor", "middle")
+        .style("font-size", "14px")
+        .style("text-decoration", "none")
+        .html("Time trailing the record");
+
+        // add x axis
+        //The ‘g’ element is a container element for grouping together related graphics elements.
+    svg.append("g")
+        .attr("class", "x axis")
+        .call(xAxis)
+        .attr("transform", "translate(0," + height + ")")
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr(    "dx", "1em")
+        .attr("dy", "1em")
+
+        // add y axis
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 5)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Ranking")
 
 
-      //bottom of the page credits
-  svg.append("text")
-      .attr("x", (width / 2))
-      .attr("y", height + 60)
-      .attr("text-anchor", "middle")
-      .style("font-size", "10px")
-      .style("text-decoration", "none")
-      .html(jsonData.source_name);
-   svg.append("text")
-      .attr("x", (width / 2))
-      .attr("y", height + 70)
-      .attr("text-anchor", "middle")
-      .style("font-size", "10px")
-      .style("text-decoration", "none")
-      .html(jsonData.display_url);
 
-    // add x axis
-    //The ‘g’ element is a container element for grouping together related graphics elements.
-  svg.append("g")
-      .attr("class", "x axis")
-      .call(xAxis)
-      .attr("transform", "translate(0," + height + ")")
-      .selectAll("text")
-      .style("text-anchor", "end")
-      .attr("dx", "-.8em")
-      .attr("dy", "-1em")
-      .attr("transform", "rotate(-90)" );
+    let node = svg.selectAll(".dot")
+        .data(data)
+        .enter()
+      .append("g")
+            .attr("class", "node")
 
-    // add y axis
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 5)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end");
+    node.append("circle")
+        .attr("class", function(d) {return d.Doped;})
+        .attr("r", 3.5)
+        .attr("cx", function(d) {return (x(d.Seconds - minSeconds));})
+        .attr("cy", function (d) {return y(d.Place); })
+        .style("background-color", Doped)
+        .on("mouseover", function(d){
+            d3.select(this).attr("class", "dotSelected")
+                .attr("r", 4.5);
+            tooltip.style("visibility", "visible")
+                .html(d.Name + "<br/>" +
+                    d.Nationality + "<br/>" +
+                    "Time: "+d.Time + "<br/> Year: "+ d.Year + "<br/>" +
+                    " " + d.Doping);
+        })
+        .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+        .on("mouseout", function(){
+            d3.select(this).attr("r", 3.5).attr("class", function(d) {return d.Doped;});
+            tooltip.style("visibility", "hidden");
+        })
+    node.append("text")
+            .attr("x", function(d) {return (x(d.Seconds - minSeconds))+5;})
+            .attr("y", function (d) {return y(d.Place) + 3; })
+            .style("font-size", "10px")
+            .style("text-decoration", "none")
+            .text(function(d) {return d.Name;})
 
-
-
-  svg.selectAll("bar")
-      .data(data)
-      .enter().append("rect")
-      .attr("class", "bar")
-      .attr("GDP", function (d) {return  d[1]})
-      .attr("x", function(d) { return (d[2] * 1.96); })
-      .attr("width", width/data.length)
-      .attr("y", function (d) {return  (y(d[1]))})
-      .attr("height", function(d) { return (height - y(d[1])); })
-      .on("mouseover", function(d){
-          d3.select(this).attr("class", "barSelected");
-          tooltip.style("visibility", "visible").html(d[4]+" "+ d[3] +"<br/>" + "GDP: "+d[1] );
-
-      })
-      .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
-      .on("mouseout", function(){
-          d3.select(this).attr("class", "bar");
-          tooltip.style("visibility", "hidden");
-      });
 });

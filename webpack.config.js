@@ -18,8 +18,19 @@ module.exports = {
     loaders: [
       {
         test: /\.js?$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /(node_modules)/,
         loaders: ["babel?presets[]=es2015"]
+      },
+      {
+        test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        loader: 'file-loader',
+      },
+      {
+        test: /\.(jpg|png)$/,
+        loader: 'file-loader',
+        options: {
+          name: '[path][name].[hash].[ext]',
+        },
       },
       {
         test: /\.(css|sass)$/,
@@ -29,10 +40,10 @@ module.exports = {
     ]
   },
   devServer: {
-      contentBase: "./build",
-      noInfo: false, //  --no-info option
-      hot: true,
-      inline: true
+    contentBase: "./build",
+    noInfo: false, //  --no-info option
+    hot: true,
+    inline: true
   },
   plugins: [
     new webpack.NoErrorsPlugin(),

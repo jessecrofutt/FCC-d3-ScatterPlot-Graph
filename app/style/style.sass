@@ -1,4 +1,11 @@
-
+@font-face
+  font-family: 'Actor'
+  font-style: normal
+  font-weight: 400
+  src: url('./fonts/actor-v6-latin-regular.eot') /* IE9 Compat Modes */
+  src: url('./fonts/actor-v6-latin-regular.woff2') format('woff2') /* Super Modern Browsers */
+  src: url('./fonts/actor-v6-latin-regular.woff') format('woff') /* Modern Browsers */
+  src: url('./fonts/actor-v6-latin-regular.svg#Actor') format('svg') /* Legacy iOS */
 
 =border-radius($radius)
   -webkit-border-radius: $radius
@@ -6,27 +13,51 @@
   -ms-border-radius: $radius
   border-radius: $radius
 
-$barColor: #29000b
-$barSelected: #C90039
+$IMFell: 'Actor', Helvetica, Arial, serif
+$dotColor: #29000b
+$dotSelected: #7a0001
 $charcoal: rgba(20,20,20,0.98)
+$paleWhite: rgba(200,200,200,0.8)
+
 #svg
-  background-color: rgba(200,200,200,0.9)
+  font-family: $IMFell
+  top: 5vh
+  position: relative
+  background-color: $paleWhite
   padding: 1em
   width: 600px
+  bottom: auto
   border: solid 1px black
   +border-radius(3px)
 
 body
+  font-family: $IMFell
+  background-image: url('http://res.cloudinary.com/dtau8d3ak/image/upload/c_scale,h_1020,w_1181/v1486467485/alpe2_ysnsbq.jpg')
   background-color: $charcoal
+  background-repeat: no-repeat
+  background-position: center
+
   color: white
   display: flex
   justify-content: center
-  width: 100%
-.bar
-  fill: $barColor
+  align-items: center
 
-.barSelected
-  fill: $barSelected
+.clean
+  fill: #0073a8
+
+.container
+  display: flex
+  align-content: center
+
+.doped
+  fill: #ff2400
+
+.dot
+  border: solid 2px $dotColor
+
+.dotSelected
+  border: solid 2px black
+  fill: $dotSelected
 
   .bar:hover
     fill: #a50001
@@ -41,10 +72,11 @@ body
     shape-rendering: crispEdges
 
 .tooltip
+  font-size: 0.8em
   padding: 1em
-  color: $barSelected
+  color: $paleWhite
   background-color: $charcoal
-  border: solid 1px $barColor
-  width: 6em
-  height: 2em
+  border: solid 1px $dotColor
+  width: 10em
+  //height: 9em
   +border-radius(3px)
