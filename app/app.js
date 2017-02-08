@@ -167,6 +167,8 @@ d3.json(url, (jsonData) => {
             d3.select(this).attr("class", "dotSelected")
                 .attr("r", 4.5);
             tooltip.style("visibility", "visible")
+                .style("top", (d3.event.pageY + 10) + "px")
+                .style("left", (d3.event.pageX) + "px")
                 .html(d.Name + "<br/>" +
                     d.Nationality + "<br/>" +
                     "Time: "+d.Time + "<br/> Year: "+ d.Year + "<br/>" +

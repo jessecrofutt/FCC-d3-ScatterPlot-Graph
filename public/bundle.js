@@ -160,7 +160,7 @@
 	        return y(d.Place);
 	    }).style("background-color", Doped).on("mouseover", function (d) {
 	        d3.select(this).attr("class", "dotSelected").attr("r", 4.5);
-	        tooltip.style("visibility", "visible").html(d.Name + "<br/>" + d.Nationality + "<br/>" + "Time: " + d.Time + "<br/> Year: " + d.Year + "<br/>" + " " + d.Doping);
+	        tooltip.style("visibility", "visible").style("top", d3.event.pageY + 10 + "px").style("left", d3.event.pageX + "px").html(d.Name + "<br/>" + d.Nationality + "<br/>" + "Time: " + d.Time + "<br/> Year: " + d.Year + "<br/>" + " " + d.Doping);
 	    }).on("mousemove", function () {
 	        return tooltip.style("top", event.pageY - 10 + "px").style("left", event.pageX + 10 + "px");
 	    }).on("mouseout", function () {
